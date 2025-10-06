@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import Services from "./components/Services";
+import Testimonials from "./components/Testimonials";
+import CallToAction from "./components/CallToAction";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-black text-gray-200 font-sans scroll-smooth">
+      <Navbar />
+      <main className="">
+        <Hero />
+        <Services />
+        <Testimonials />
+        <CallToAction />
+      </main>
+      <footer className="bg-gray-900 text-gray-500 text-center py-6 mt-20">
+        &copy; 2024 FitPro. Todos los derechos reservados.
+      </footer>
     </div>
   );
-}
+};
 
 export default App;
