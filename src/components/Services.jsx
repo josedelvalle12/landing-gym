@@ -1,6 +1,27 @@
 import React from "react";
+import { motion, useInView } from "framer-motion";
 
-const services = [
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+        duration: 0.6,
+        staggerChildren: 0.2,
+        },
+    },
+    };
+
+    const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, type: "spring", stiffness: 100 },
+    },
+    };
+
+    const services = [
     {
         title: "Entrenamiento Personalizado",
         description:
@@ -58,26 +79,46 @@ const services = [
     ];
 
     const Services = () => {
+    const ref = React.useRef(null);
+    const isInView = useInView(ref, { once: true, amount: 0.3 });
+
     return (
-        <section id="services" className="bg-gray-900 py-20 px-6">
-        <div className="max-w-7xl mx-auto text-center mb-14">
-            <h2 className="text-4xl font-extrabold text-yellow-500 mb-4">Nuestros Servicios</h2>
-            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+        <section id="services" className="bg-gray-900 py-16 sm:py-20 px-4 sm:px-6" ref={ref}>
+        <motion.div
+            className="max-w-7xl mx-auto text-center mb-12 sm:mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+        >
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-yellow-500 mb-4">
+            Nuestros Servicios
+            </h2>
+            <p className="text-gray-300 max-w-2xl mx-auto text-base sm:text-lg">
             Descubre cómo podemos ayudarte a alcanzar tu mejor versión con un enfoque integral.
             </p>
-        </div>
-        <div className="max-w-7xl mx-auto grid gap-10 md:grid-cols-3">
-            {services.map(({ title, description, icon }) => (
-            <div
+        </motion.div>
+        <motion.div
+            className="max-w-7xl mx-auto grid gap-6 sm:gap-8 md:gap-10 grid-cols-1 md:grid-cols-3"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+        >
+            {services.map(({ title, description, icon }, i) => (
+            <motion.div
                 key={title}
-                className="bg-gray-800 rounded-lg p-8 flex flex-col items-center text-center shadow-lg hover:shadow-yellow-500 transition-shadow"
+                className="bg-gray-800 rounded-xl p-6 sm:p-8 flex flex-col items-center text-center shadow-lg hover:shadow-yellow-500/50 transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                variants={cardVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
+                aria-label={`Servicio: ${title}`}
             >
+                <motion.div whileHover={{ rotate: 5, scale: 1.1 }} transition={{ duration: 0.3 }}>
                 {icon}
-                <h3 className="text-xl font-semibold text-yellow-400 mb-3">{title}</h3>
-                <p className="text-gray-300">{description}</p>
-            </div>
+                </motion.div>
+                <h3 className="text-xl font-semibold text-yellow-400 mb-3 mt-2">{title}</h3>
+                <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{description}</p>
+            </motion.div>
             ))}
-        </div>
+        </motion.div>
         </section>
     );
 };
