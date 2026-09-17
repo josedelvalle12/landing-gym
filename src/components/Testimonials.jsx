@@ -1,123 +1,100 @@
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Reveal, { EASE } from "./Reveal";
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-        duration: 0.6,
-        staggerChildren: 0.15,
-        },
-    },
-    };
+const TESTIMONIALS = [
+  {
+    name: "María López",
+    quote:
+      "Perdí 10 kg en 4 meses sin dejar de disfrutar el proceso. El seguimiento fue constante y real.",
+    result: "-10 kg en 4 meses",
+  },
+  {
+    name: "Carlos Méndez",
+    quote:
+      "El seguimiento personalizado me ayudó a superar mis límites y ganar fuerza de forma segura.",
+    result: "+35% en press de banca",
+  },
+  {
+    name: "Ana Torres",
+    quote:
+      "La asesoría nutricional cambió mi forma de comer. Ahora tengo más energía que nunca.",
+    result: "Hábitos sostenibles en 6 meses",
+  },
+];
 
-    const testimonialVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.5, type: "spring", stiffness: 100 },
-    },
-    };
+const Testimonials = () => {
+  const [index, setIndex] = useState(0);
+  const total = TESTIMONIALS.length;
+  const current = TESTIMONIALS[index];
 
-    const itemVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.4 } },
-    };
+  const go = (dir) => setIndex((i) => (i + dir + total) % total);
 
-    const testimonials = [
-    {
-        name: "María López",
-        feedback:
-        "Gracias a FitPro logré perder 10 kg en 4 meses. El entrenamiento y la motivación son excepcionales.",
-        avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-    },
-    {
-        name: "Carlos Méndez",
-        feedback:
-        "El seguimiento personalizado me ayudó a superar mis límites y ganar fuerza de manera segura.",
-        avatar: "https://randomuser.me/api/portraits/men/45.jpg",
-    },
-    {
-        name: "Ana Torres",
-        feedback:
-        "La asesoría nutricional cambió mi forma de comer y ahora me siento con más energía y salud.",
-        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    },
-    ];
+  return (
+    <section id="testimonios" className="bg-ink border-t border-line">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 py-16 sm:py-24">
+        <Reveal className="mb-12 md:mb-16">
+          <span className="text-xs tracking-[0.28em] uppercase text-paper-dim">
+            05 — Resultados reales
+          </span>
+        </Reveal>
 
-    const Testimonials = () => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, amount: 0.2 });
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+          <span
+            aria-hidden
+            className="hidden md:block md:col-span-2 font-display italic text-gold/70 text-8xl leading-none"
+          >
+            “
+          </span>
 
-    return (
-        <section id="testimonials" className="bg-black py-16 sm:py-20 px-4 sm:px-6" ref={ref}>
-        <motion.div
-            className="max-w-7xl mx-auto text-center mb-12 sm:mb-14"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-        >
-            <motion.h2
-            className="text-3xl sm:text-4xl font-extrabold text-yellow-500 mb-4"
-            variants={itemVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            >
-            Testimonios
-            </motion.h2>
-            <motion.p
-            className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg"
-            variants={itemVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            >
-            Lo que dicen nuestros clientes sobre su experiencia con FitPro.
-            </motion.p>
-        </motion.div>
-        <motion.div
-            className="max-w-7xl mx-auto grid gap-6 sm:gap-8 md:gap-10 grid-cols-1 md:grid-cols-3"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-        >
-            {testimonials.map(({ name, feedback, avatar }, i) => (
-            <motion.div
-                key={name}
-                className="bg-gray-900 rounded-xl p-6 sm:p-8 flex flex-col items-center text-center shadow-md hover:shadow-yellow-500/30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-black"
-                variants={testimonialVariants}
-                whileHover={{ y: -3, scale: 1.01 }}
-                aria-label={`Testimonio de ${name}`}
-            >
-                <motion.img
-                src={avatar}
-                alt={`Foto de perfil de ${name}, cliente de FitPro`}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mb-4 sm:mb-6 object-cover border-2 border-yellow-500 shadow-md"
-                loading="lazy"
-                whileHover={{ scale: 1.1, rotate: 2 }}
-                transition={{ duration: 0.3 }}
-                />
-                <motion.p
-                className="text-gray-300 italic mb-4 text-sm sm:text-base leading-relaxed px-2"
-                variants={itemVariants}
-                initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
+          <div className="md:col-span-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.5, ease: EASE }}
+              >
+                <p className="font-display font-medium tracking-tight leading-[1.15] text-3xl sm:text-4xl md:text-5xl text-paper max-w-3xl">
+                  {current.quote}
+                </p>
+
+                <div className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                  <span className="text-sm tracking-[0.18em] uppercase text-paper">
+                    — {current.name}
+                  </span>
+                  <span className="text-sm text-gold">{current.result}</span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mt-14 flex items-center justify-between border-t border-line pt-6">
+              <span className="text-xs tracking-[0.2em] uppercase text-paper-dim">
+                {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+              </span>
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={() => go(-1)}
+                  aria-label="Testimonio anterior"
+                  className="text-paper-dim hover:text-gold transition-colors text-lg"
                 >
-                "{feedback}"
-                </motion.p>
-                <motion.h4
-                className="text-yellow-400 font-semibold text-base sm:text-lg"
-                whileHover={{ scale: 1.05, color: "#fbbf24" }} // Intensifica el amarillo en hover
-                transition={{ duration: 0.2 }}
+                  ←
+                </button>
+                <button
+                  onClick={() => go(1)}
+                  aria-label="Siguiente testimonio"
+                  className="text-paper-dim hover:text-gold transition-colors text-lg"
                 >
-                {name}
-                </motion.h4>
-            </motion.div>
-            ))}
-        </motion.div>
-        </section>
-    );
+                  →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Testimonials;

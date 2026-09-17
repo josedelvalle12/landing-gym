@@ -1,135 +1,129 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const navbarVariants = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    };
+const LINKS = [
+  { id: "metodo", label: "Método" },
+  { id: "programas", label: "Programas" },
+  { id: "testimonios", label: "Resultados" },
+];
 
-    const linkVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i) => ({
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.4, delay: i * 0.1 },
-    }),
-    };
+const scrollTo = (id) => {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+};
 
-    const mobileMenuVariants = {
-    hidden: { opacity: 0, x: 100, scale: 0.8 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        transition: { duration: 0.3, type: "spring", stiffness: 300 },
-    },
-    exit: { opacity: 0, x: 100, scale: 0.8, transition: { duration: 0.2 } },
-    };
+const Navbar = () => {
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    const Navbar = () => {
-    const sections = [
-        { id: "hero", label: "Inicio" },
-        { id: "services", label: "Servicios" },
-        { id: "testimonials", label: "Testimonios" },
-        { id: "cta", label: "Únete Ahora" },
-    ];
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 60);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    const handleScroll = (id) => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-    };
-
-    return (
-        <motion.nav
-        className="fixed top-0 w-full bg-black bg-opacity-95 backdrop-blur-sm z-50"
-        variants={navbarVariants}
-        initial="hidden"
-        animate="visible"
-        >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-            <motion.div
-            className="text-2xl sm:text-3xl font-bold text-yellow-500 cursor-pointer"
-            onClick={() => handleScroll("hero")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Ir al inicio - FitPro"
-            >
-            FitPro
-            </motion.div>
-            <motion.ul
-            className="hidden md:flex space-x-6 sm:space-x-8 text-gray-300 font-semibold"
-            initial="hidden"
-            animate="visible"
-            >
-            {sections.map(({ id, label }, i) => (
-                <motion.li
-                key={id}
-                className="cursor-pointer hover:text-yellow-400 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded"
-                onClick={() => handleScroll(id)}
-                variants={linkVariants}
-                custom={i}
-                >
-                {label}
-                </motion.li>
-            ))}
-            </motion.ul>
-            <MobileMenu sections={sections} handleScroll={handleScroll} />
-        </div>
-        </motion.nav>
-    );
-    };
-
-    const MobileMenu = ({ sections, handleScroll }) => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <div className="md:hidden relative">
+  return (
+    <nav
+      className={`fixed top-0 inset-x-0 z-50 border-b transition-colors duration-500 ${
+        solid
+          ? "bg-ink/95 border-line"
+          : "bg-transparent border-transparent"
+      }`}
+    >
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
         <button
-            aria-label="Toggle menu"
-            onClick={() => setOpen(!open)}
-            className="text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded"
+          onClick={() => scrollTo("hero")}
+          className="font-display font-bold text-xl sm:text-2xl tracking-tight text-paper"
+          aria-label="Ir al inicio — FitPro"
         >
-            <motion.svg
-            className="w-6 h-6 sm:w-8 sm:h-8"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-            >
-            {open ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-            </motion.svg>
+          FITPRO
         </button>
-        <motion.ul
-            className="absolute right-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-xl py-2 text-gray-300 font-semibold space-y-2 border border-gray-700"
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate={open ? "visible" : "exit"}
-            role="menu"
-        >
-            {sections.map(({ id, label }) => (
-            <motion.li
-                key={id}
-                className="px-4 py-3 hover:bg-yellow-500 hover:text-black cursor-pointer transition-colors focus:outline-none focus:bg-yellow-400 rounded"
-                onClick={() => {
-                handleScroll(id);
-                setOpen(false);
-                }}
-                role="menuitem"
-                whileHover={{ x: 5 }}
-            >
+
+        <ul className="hidden md:flex items-center gap-10 text-xs tracking-[0.18em] uppercase text-paper-dim">
+          {LINKS.map(({ id, label }) => (
+            <li key={id}>
+              <button
+                onClick={() => scrollTo(id)}
+                className="hover:text-paper transition-colors duration-300"
+              >
                 {label}
-            </motion.li>
-            ))}
-        </motion.ul>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => scrollTo("cta")}
+            className="hidden sm:inline-block bg-gold text-ink text-xs tracking-[0.14em] uppercase font-semibold px-5 py-2.5 hover:bg-paper transition-colors duration-300"
+          >
+            Únete ahora
+          </button>
+
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Abrir menú"
+            className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-[5px] text-paper"
+          >
+            <motion.span
+              className="block w-6 h-px bg-current"
+              animate={{ rotate: open ? 45 : 0, y: open ? 6 : 0 }}
+              transition={{ duration: 0.25 }}
+            />
+            <motion.span
+              className="block w-6 h-px bg-current"
+              animate={{ opacity: open ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+            />
+            <motion.span
+              className="block w-6 h-px bg-current"
+              animate={{ rotate: open ? -45 : 0, y: open ? -6 : 0 }}
+              transition={{ duration: 0.25 }}
+            />
+          </button>
         </div>
-    );
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden overflow-hidden bg-ink border-t border-line"
+          >
+            <ul className="px-6 sm:px-10 py-6 flex flex-col gap-5 text-sm tracking-[0.14em] uppercase text-paper-dim">
+              {LINKS.map(({ id, label }) => (
+                <li key={id}>
+                  <button
+                    onClick={() => {
+                      scrollTo(id);
+                      setOpen(false);
+                    }}
+                    className="hover:text-gold transition-colors"
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={() => {
+                    scrollTo("cta");
+                    setOpen(false);
+                  }}
+                  className="text-gold"
+                >
+                  Únete ahora
+                </button>
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
 };
 
 export default Navbar;

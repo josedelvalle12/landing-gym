@@ -1,26 +1,27 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Services from "./components/Services";
+import Stats from "./components/Stats";
+import Method from "./components/Method";
+import Programs from "./components/Programs";
 import Testimonials from "./components/Testimonials";
 import CallToAction from "./components/CallToAction";
+import Footer from "./components/Footer";
 import './App.css'
 
 function App() {
   return (
-    
-      <div className="bg-black text-gray-200 font-sans scroll-smooth">
+    <div className="bg-ink text-paper font-sans">
       <Navbar />
-      <main className="">
+      <main>
         <Hero />
-        <Services />
+        <Stats />
+        <Method />
+        <Programs />
         <Testimonials />
         <CallToAction />
       </main>
-      <footer className="bg-gray-900 text-gray-500 text-center py-6 mt-20">
-        &copy; 2024 FitPro. Todos los derechos reservados.
-      </footer>
+      <Footer />
     </div>
-    
   )
 }
 
